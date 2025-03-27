@@ -9,15 +9,18 @@ import jack from "../../assets/jack.png";
 import user_profile from "../../assets/user_profile.jpg";
 import { API_KEY, valueConverter } from "../../data";
 import moment from "moment";
+import { useParams } from "react-router-dom";
 
-const PlayVideo = ({ videoId }) => {
+const PlayVideo = () => {
+  const { videoID } = useParams();
+
   const [apiData, setApiData] = useState(null);
   const [channelData, setChannelData] = useState(null);
   const [commentData, setCommentData] = useState([]);
 
   const fetchVideoData = async () => {
     // fetching video data
-    const videoDetails_url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${videoId}&key=${API_KEY}`;
+    const videoDetails_url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${videoID}&key=${API_KEY}`;
     await fetch(videoDetails_url)
       .then((res) => res.json())
       .then((data) => setApiData(data.items[0]));
@@ -31,7 +34,7 @@ const PlayVideo = ({ videoId }) => {
       .then((data) => setChannelData(data.items[0]));
 
     // fetching comment data
-    const comment_url = `https://youtube.googleapis.com/youtube/v3/commentThreads?part=snippet%2Creplies&videoId=${videoId}&key=${API_KEY}`;
+    const comment_url = `https://youtube.googleapis.com/youtube/v3/commentThreads?part=snippet%2Creplies&videoId=${videoID}&key=${API_KEY}`;
     await fetch(comment_url)
       .then((res) => res.json())
       .then((data) => setCommentData(data.items));
@@ -39,7 +42,7 @@ const PlayVideo = ({ videoId }) => {
 
   useEffect(() => {
     fetchVideoData();
-  }, []);
+  }, [videoID]);
 
   useEffect(() => {
     fetchOtherData();
@@ -49,7 +52,7 @@ const PlayVideo = ({ videoId }) => {
     <div className="play-video">
       {/* <video src={video1} controls autoPlay muted></video> */}
       <iframe
-        src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+        src={`https://www.youtube.com/embed/${videoID}?autoplay=1`}
         frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         referrerpolicy="strict-origin-when-cross-origin"
